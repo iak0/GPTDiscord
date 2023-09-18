@@ -312,7 +312,8 @@ class TextService:
                 tokens += converser_cog.usage_service.count_tokens(system_instruction)
             elif ctx.channel.id in converser_cog.instructions:
                 system_instruction = converser_cog.instructions[ctx.channel.id].prompt
-                usage_message = "***Added channel instruction to prompt***"
+                # usage_message = "***Added channel instruction to prompt***"
+                usage_message = None
                 tokens += converser_cog.usage_service.count_tokens(system_instruction)
             else:
                 system_instruction = None
@@ -374,14 +375,14 @@ class TextService:
                 response_text = f"{response_text}"
                 response_text = (
                     f"{usage_message}\n\n{response_text}"
-                    if system_instruction
+                    if system_instruction and usage_message
                     else response_text
                 )
             elif from_other_action:
                 response_text = f"***{from_other_action}*** {response_text}"
                 response_text = (
                     f"{usage_message}\n\n{response_text}"
-                    if system_instruction
+                    if system_instruction and usage_message
                     else response_text
                 )
             elif from_ask_command or from_ask_action:
@@ -395,7 +396,7 @@ class TextService:
                 response_text = f"***{prompt}***{response_text}"
                 response_text = (
                     f"{usage_message}\n\n{response_text}"
-                    if system_instruction
+                    if system_instruction and usage_message
                     else response_text
                 )
             elif from_edit_command:
@@ -797,6 +798,13 @@ class TextService:
                         )
                     )
 
+                    # Limit conversation history length
+                    CONVERSATION_HISTORY_LENGTH = 10
+                    old_history = converser_cog.conversation_threads[message.channel.id].history
+                    opener, old_history = old_history[0], old_history[1:]
+                    converser_cog.conversation_threads[message.channel.id].history = [opener] + old_history[-CONVERSATION_HISTORY_LENGTH+1:]
+                    print("PRUNED history:", len(converser_cog.conversation_threads[message.channel.id].history), [h.text[:20] for h in converser_cog.conversation_threads[message.channel.id].history])
+
                 # increment the conversation counter for the user
                 converser_cog.conversation_threads[message.channel.id].count += 1
 
@@ -964,18 +972,18 @@ class ConversationView(discord.ui.View):
         self.from_ask_command = from_ask_command
         self.from_edit_command = from_edit_command
         self.custom_api_key = custom_api_key
-        self.add_item(
-            RedoButton(
-                self.converser_cog,
-                model=model,
-                from_ask_command=from_ask_command,
-                from_edit_command=from_edit_command,
-                custom_api_key=self.custom_api_key,
-            )
-        )
+        # self.add_item(
+        #     RedoButton(
+        #         self.converser_cog,
+        #         model=model,
+        #         from_ask_command=from_ask_command,
+        #         from_edit_command=from_edit_command,
+        #         custom_api_key=self.custom_api_key,
+        #     )
+        # )
 
-        if id in self.converser_cog.conversation_threads:
-            self.add_item(EndConvoButton(self.converser_cog))
+        # if id in self.converser_cog.conversation_threads:
+        #     self.add_item(EndConvoButton(self.converser_cog))
 
     async def on_timeout(self):
         # Remove the button from the view/message

@@ -363,7 +363,7 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
             ctx, discord.ApplicationContext
         ):  # When the conversation is ended from the slash command
             await ctx.respond(
-                "You have ended the conversation with GPT. Start a conversation with /gpt converse",
+                "You have ended the conversation with GPT. Start a conversation with /slime converse",
                 ephemeral=True,
                 delete_after=10,
             )
@@ -371,13 +371,13 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
             ctx, discord.Interaction
         ):  # When the user ends the conversation from the button
             await ctx.response.send_message(
-                "You have ended the conversation with GPT. Start a conversation with /gpt converse",
+                "You have ended the conversation with GPT. Start a conversation with /slime converse",
                 ephemeral=True,
                 delete_after=10,
             )
         else:  # The case for when the user types "end" in the channel
             await ctx.reply(
-                "You have ended the conversation with GPT. Start a conversation with /gpt converse",
+                "You have ended the conversation with GPT. Start a conversation with /slime converse",
                 delete_after=10,
             )
 
@@ -425,7 +425,7 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
     async def send_settings_text(self, ctx):
         """compose and return the settings menu to the interacting user"""
         embed = discord.Embed(
-            title="GPT3Bot Settings",
+            title="Slime Settings",
             description="The current settings of the model",
             color=0x00FF00,
         )
@@ -689,12 +689,6 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
         # Get the first file in the message if there is one
         file = message.attachments[0] if len(message.attachments) > 0 else None
 
-        # Process the message if the user is in a conversation
-        if await TextService.process_conversation_message(
-            self, message, USER_INPUT_API_KEYS, USER_KEY_DB, file=file
-        ):
-            original_message[message.author.id] = message.id
-
         # If the user tagged the bot and the tag wasn't an @here or @everyone, retrieve the message
         if f"<@{self.bot.user.id}>" in message.content and not (
             "@everyone" in message.content or "@here" in message.content
@@ -717,11 +711,17 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
                 )
                 return
 
-            await self.ask_command(
-                message,
-                prompt=prompt,
-                from_message_context=True,
-            )
+            # Process the message if the user is in a conversation
+            if await TextService.process_conversation_message(
+                self, message, USER_INPUT_API_KEYS, USER_KEY_DB, file=file
+            ):
+                original_message[message.author.id] = message.id
+            else:
+                await self.ask_command(
+                    message,
+                    prompt=prompt,
+                    from_message_context=True,
+                )
 
     def cleanse_response(self, response_text):
         """Cleans history tokens from response"""
@@ -729,6 +729,7 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
         response_text = response_text.replace("You:", "")
         response_text = response_text.replace(BOT_NAME.replace(" ", ""), "")
         response_text = response_text.replace(BOT_NAME, "")
+        response_text = response_text.replace("Slime:", "")
         response_text = response_text.replace("<|endofstatement|>", "")
         return response_text
 
@@ -783,7 +784,7 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
             inline=False,
         )
         embed.add_field(
-            name="/gpt converse", value="Start a conversation with GPT", inline=False
+            name="/gpt converse", value="Start a conversation with Slime", inline=False
         )
         embed.add_field(
             name="/gpt end",
@@ -1099,7 +1100,7 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
         top_p: float,
         frequency_penalty: float,
         presence_penalty: float,
-        use_threads: bool = True,  # Add this parameter
+        use_threads: bool = False,  # Add this parameter
     ):
         """Command handler. Starts a conversation with the bot
 
@@ -1137,14 +1138,14 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
 
         if use_threads:
             if private:
-                embed_title = f"{user.name}'s private conversation with GPT"
+                embed_title = f"{user.name}'s private conversation with Slime"
                 thread = await ctx.channel.create_thread(
                     name=embed_title,
                     auto_archive_duration=60,
                 )
                 target = thread
             else:
-                embed_title = f"{user.name}'s conversation with GPT"
+                embed_title = f"{user.name}'s conversation with Slime"
                 message_embed = discord.Embed(
                     title=embed_title,
                     description=f"**Model**: {self.model.model if not model else model}",
@@ -1161,7 +1162,7 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
                 )
                 message_thread = await ctx.send(embed=message_embed)
                 thread = await message_thread.create_thread(
-                    name=user.name + "'s conversation with GPT",
+                    name=user.name + "'s conversation with Slime",
                     auto_archive_duration=60,
                 )
                 await ctx.respond("Conversation started.")
@@ -1187,12 +1188,14 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
 
             target = ctx.channel
             if private:
-                embed_title = f"{user.name}'s private conversation with GPT"
+                embed_title = f"{user.name}'s private conversation with Slime"
             else:
-                embed_title = f"{user.name}'s conversation with GPT"
+                # embed_title = f"{user.name}'s conversation with Slime"
+                embed_title = f"Slime has joined the chat."
 
             embed = discord.Embed(title=embed_title, color=0x808080)
             await ctx.respond(embed=embed)
+            # await ctx.respond("Hi!")
 
         self.conversation_threads[target.id] = Thread(target.id)
         self.conversation_threads[target.id].model = (
@@ -1264,13 +1267,13 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
         self.conversation_thread_owners[user_id_normalized].append(target.id)
         overrides = self.conversation_threads[target.id].get_overrides()
 
-        await target.send(f"<@{str(ctx.user.id)}> is the thread owner.")
+        # await target.send(f"<@{str(ctx.user.id)}> is the thread owner.")
 
-        await target.send(
-            embed=EmbedStatics.generate_conversation_embed(
-                self.conversation_threads, target, opener, overrides
-            )
-        )
+        # await target.send(
+        #     embed=EmbedStatics.generate_conversation_embed(
+        #         self.conversation_threads, target, opener, overrides
+        #     )
+        # )
 
         # send opening
         if opener:

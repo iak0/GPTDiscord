@@ -48,13 +48,13 @@ class EmbedStatics:
     @staticmethod
     def generate_end_embed():
         embed = discord.Embed(
-            title="Conversation Ended",
-            description=f"This conversation has ended. You can start a new one with `/gpt converse`",
+            title="Slime has left the chat",
+            description=f"Slime will be back later!",
             color=0x808080,
         )
-        embed.set_thumbnail(url="https://i.imgur.com/asA13vI.png")
-        footer_text = "Conversation ended"
-        embed.set_footer(text=footer_text, icon_url="https://i.imgur.com/asA13vI.png")
+        # embed.set_thumbnail(url="https://i.imgur.com/asA13vI.png")
+        # footer_text = "Conversation ended"
+        # embed.set_footer(text=footer_text, icon_url="https://i.imgur.com/asA13vI.png")
         return embed
 
     @staticmethod

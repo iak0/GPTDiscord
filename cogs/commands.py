@@ -54,8 +54,8 @@ class Commands(discord.Cog, name="Commands"):
         checks=[Check.check_dalle_roles()],
     )
     gpt = discord.SlashCommandGroup(
-        name="gpt",
-        description="GPT related commands",
+        name="slime",
+        description="Slime related commands",
         guild_ids=ALLOWED_GUILDS,
         checks=[Check.check_gpt_roles()],
     )
@@ -97,7 +97,7 @@ class Commands(discord.Cog, name="Commands"):
     @add_to_group("system")
     @discord.slash_command(
         name="settings",
-        description="Get settings for GPT3Discord",
+        description="Get settings for Slime",
         guild_ids=ALLOWED_GUILDS,
     )
     @discord.option(
@@ -121,7 +121,7 @@ class Commands(discord.Cog, name="Commands"):
     @add_to_group("system")
     @discord.slash_command(
         name="settings-reset",
-        description="Reset all settings for GPT3Discord",
+        description="Reset all settings for Slime",
         guild_ids=ALLOWED_GUILDS,
     )
     @discord.guild_only()
@@ -151,7 +151,7 @@ class Commands(discord.Cog, name="Commands"):
     @add_to_group("system")
     @discord.slash_command(
         name="usage",
-        description="Get usage statistics for GPT3Discord",
+        description="Get usage statistics for Slime",
         guild_ids=ALLOWED_GUILDS,
     )
     @discord.guild_only()
@@ -314,7 +314,7 @@ class Commands(discord.Cog, name="Commands"):
     # GPT commands
     #
 
-    @add_to_group("gpt")
+    @add_to_group("slime")
     @discord.slash_command(
         name="instruction",
         description="Set your own system instruction",
@@ -358,137 +358,137 @@ class Commands(discord.Cog, name="Commands"):
             ctx, mode, type, instruction, instruction_file, private
         )
 
-    @add_to_group("gpt")
-    @discord.slash_command(
-        name="ask",
-        description="Ask the bot something!",
-        guild_ids=ALLOWED_GUILDS,
-    )
-    @discord.option(
-        name="prompt", description="The prompt to send to the model", required=False
-    )
-    @discord.option(
-        name="prompt_file",
-        description="The prompt file to send to the model. Is added before the prompt, both can be combined",
-        required=False,
-        input_type=discord.SlashCommandOptionType.attachment,
-    )
-    @discord.option(
-        name="model",
-        description="The model to use for the request",
-        required=False,
-        autocomplete=Settings_autocompleter.get_models,
-    )
-    @discord.option(
-        name="private", description="Will only be visible to you", required=False
-    )
-    @discord.option(
-        name="temperature",
-        description="Higher values means the model will take more risks",
-        required=False,
-        min_value=0,
-        max_value=2,
-    )
-    @discord.option(
-        name="top_p",
-        description="1 is greedy sampling, 0.1 means only considering the top 10% of probability distribution",
-        required=False,
-        min_value=0,
-        max_value=1,
-    )
-    @discord.option(
-        name="frequency_penalty",
-        description="Decreasing the model's likelihood to repeat the same line verbatim",
-        required=False,
-        min_value=-2,
-        max_value=2,
-    )
-    @discord.option(
-        name="presence_penalty",
-        description="Increasing the model's likelihood to talk about new topics",
-        required=False,
-        min_value=-2,
-        max_value=2,
-    )
-    @discord.guild_only()
-    async def ask(
-        self,
-        ctx: discord.ApplicationContext,
-        prompt: str,
-        prompt_file: discord.Attachment,
-        model: str,
-        private: bool,
-        temperature: float,
-        top_p: float,
-        frequency_penalty: float,
-        presence_penalty: float,
-    ):
-        await self.converser_cog.ask_command(
-            ctx,
-            prompt,
-            private,
-            temperature,
-            top_p,
-            frequency_penalty,
-            presence_penalty,
-            prompt_file=prompt_file,
-            model=model,
-        )
+    # @add_to_group("slime")
+    # @discord.slash_command(
+    #     name="ask",
+    #     description="Ask the bot something!",
+    #     guild_ids=ALLOWED_GUILDS,
+    # )
+    # @discord.option(
+    #     name="prompt", description="The prompt to send to the model", required=False
+    # )
+    # @discord.option(
+    #     name="prompt_file",
+    #     description="The prompt file to send to the model. Is added before the prompt, both can be combined",
+    #     required=False,
+    #     input_type=discord.SlashCommandOptionType.attachment,
+    # )
+    # @discord.option(
+    #     name="model",
+    #     description="The model to use for the request",
+    #     required=False,
+    #     autocomplete=Settings_autocompleter.get_models,
+    # )
+    # @discord.option(
+    #     name="private", description="Will only be visible to you", required=False
+    # )
+    # @discord.option(
+    #     name="temperature",
+    #     description="Higher values means the model will take more risks",
+    #     required=False,
+    #     min_value=0,
+    #     max_value=2,
+    # )
+    # @discord.option(
+    #     name="top_p",
+    #     description="1 is greedy sampling, 0.1 means only considering the top 10% of probability distribution",
+    #     required=False,
+    #     min_value=0,
+    #     max_value=1,
+    # )
+    # @discord.option(
+    #     name="frequency_penalty",
+    #     description="Decreasing the model's likelihood to repeat the same line verbatim",
+    #     required=False,
+    #     min_value=-2,
+    #     max_value=2,
+    # )
+    # @discord.option(
+    #     name="presence_penalty",
+    #     description="Increasing the model's likelihood to talk about new topics",
+    #     required=False,
+    #     min_value=-2,
+    #     max_value=2,
+    # )
+    # @discord.guild_only()
+    # async def ask(
+    #     self,
+    #     ctx: discord.ApplicationContext,
+    #     prompt: str,
+    #     prompt_file: discord.Attachment,
+    #     model: str,
+    #     private: bool,
+    #     temperature: float,
+    #     top_p: float,
+    #     frequency_penalty: float,
+    #     presence_penalty: float,
+    # ):
+    #     await self.converser_cog.ask_command(
+    #         ctx,
+    #         prompt,
+    #         private,
+    #         temperature,
+    #         top_p,
+    #         frequency_penalty,
+    #         presence_penalty,
+    #         prompt_file=prompt_file,
+    #         model=model,
+    #     )
 
-    @add_to_group("gpt")
-    @discord.slash_command(
-        name="edit",
-        description="Ask the bot to edit some text!",
-        guild_ids=ALLOWED_GUILDS,
-    )
-    @discord.option(
-        name="instruction",
-        description="How you want the bot to edit the text",
-        required=True,
-    )
-    @discord.option(
-        name="text",
-        description="The text you want to edit, can be empty",
-        required=False,
-        default="",
-    )
-    @discord.option(
-        name="private", description="Will only be visible to you", required=False
-    )
-    @discord.option(
-        name="temperature",
-        description="Higher values means the model will take more risks",
-        required=False,
-        input_type=float,
-        min_value=0,
-        max_value=2,
-    )
-    @discord.option(
-        name="top_p",
-        description="1 is greedy sampling, 0.1 means only considering the top 10% of probability distribution",
-        required=False,
-        input_type=float,
-        min_value=0,
-        max_value=1,
-    )
-    @discord.guild_only()
-    async def edit(
-        self,
-        ctx: discord.ApplicationContext,
-        instruction: str,
-        text: str,
-        private: bool,
-        temperature: float,
-        top_p: float,
-    ):
-        await self.converser_cog.edit_command(
-            ctx, instruction, text, private, temperature, top_p
-        )
+    # @add_to_group("slime")
+    # @discord.slash_command(
+    #     name="edit",
+    #     description="Ask the bot to edit some text!",
+    #     guild_ids=ALLOWED_GUILDS,
+    # )
+    # @discord.option(
+    #     name="instruction",
+    #     description="How you want the bot to edit the text",
+    #     required=True,
+    # )
+    # @discord.option(
+    #     name="text",
+    #     description="The text you want to edit, can be empty",
+    #     required=False,
+    #     default="",
+    # )
+    # @discord.option(
+    #     name="private", description="Will only be visible to you", required=False
+    # )
+    # @discord.option(
+    #     name="temperature",
+    #     description="Higher values means the model will take more risks",
+    #     required=False,
+    #     input_type=float,
+    #     min_value=0,
+    #     max_value=2,
+    # )
+    # @discord.option(
+    #     name="top_p",
+    #     description="1 is greedy sampling, 0.1 means only considering the top 10% of probability distribution",
+    #     required=False,
+    #     input_type=float,
+    #     min_value=0,
+    #     max_value=1,
+    # )
+    # @discord.guild_only()
+    # async def edit(
+    #     self,
+    #     ctx: discord.ApplicationContext,
+    #     instruction: str,
+    #     text: str,
+    #     private: bool,
+    #     temperature: float,
+    #     top_p: float,
+    # ):
+    #     await self.converser_cog.edit_command(
+    #         ctx, instruction, text, private, temperature, top_p
+    #     )
 
-    @add_to_group("gpt")
+    @add_to_group("slime")
     @discord.slash_command(
         name="converse",
-        description="Have a conversation with GPT",
+        description="Have a conversation with Slime",
         guild_ids=ALLOWED_GUILDS,
     )
     @discord.option(
@@ -557,7 +557,7 @@ class Commands(discord.Cog, name="Commands"):
         name="use_threads",
         description="Set this to false to start a channel conversation",
         required=False,
-        default=True,
+        default=False,
     )
     @discord.guild_only()
     async def converse(
@@ -588,10 +588,10 @@ class Commands(discord.Cog, name="Commands"):
             use_threads=use_threads,
         )
 
-    @add_to_group("gpt")
+    @add_to_group("slime")
     @discord.slash_command(
         name="end",
-        description="End a conversation with GPT",
+        description="End a conversation with Slime",
         guild_ids=ALLOWED_GUILDS,
     )
     @discord.guild_only()
@@ -986,7 +986,7 @@ class Commands(discord.Cog, name="Commands"):
         await self.converser_cog.private_test_command(ctx)
 
     @discord.slash_command(
-        name="help", description="Get help for GPT3Discord", guild_ids=ALLOWED_GUILDS
+        name="help", description="Get help for Slime", guild_ids=ALLOWED_GUILDS
     )
     @discord.guild_only()
     async def help(self, ctx: discord.ApplicationContext):
@@ -1006,7 +1006,7 @@ class Commands(discord.Cog, name="Commands"):
     #
 
     @discord.message_command(
-        name="Ask GPT", guild_ids=ALLOWED_GUILDS, checks=[Check.check_gpt_roles()]
+        name="Ask Slime", guild_ids=ALLOWED_GUILDS, checks=[Check.check_gpt_roles()]
     )
     async def ask_gpt_action(self, ctx, message: discord.Message):
         await self.converser_cog.ask_gpt_action(ctx, message)
